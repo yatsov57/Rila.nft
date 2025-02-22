@@ -9,7 +9,19 @@ function setup() {
   for (let i = 0; i < 50; i++) {
     rainDrops.push({ x: random(width), y: random(height), speed: random(2, 5) });
   }
-  fetchWeather();
+  function fetchWeather() {
+  let url = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      weather = data.weather[0].main.toLowerCase();
+      let sunrise = data.sys.sunrise * 1000;
+      let sunset = data.sys.sunset * 1000;
+      let now = Date.now();
+      timeOfDay = constrain(map(now, sunrise, sunset, 0, 1), 0, 1);
+      console.log("Weather:", weather, "Time of Day:", timeOfDay);
+    })
+    .catch(error => console.error("Error:", error));
 }
 
 function draw() {
